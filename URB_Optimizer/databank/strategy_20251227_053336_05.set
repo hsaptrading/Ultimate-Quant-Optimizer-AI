@@ -1,0 +1,22 @@
+; URB Optimizer Generated Set File
+; Generated: 2025-12-27 05:33:46.122301
+;
+InpRiskPerTradePct=0.5
+InpSlMethod=0
+InpFixedSL_In_Points=5000
+InpSLRangeMultiplier=1.5
+InpSLRangeMinPoints=2000
+InpSLRangeMaxPoints=12000
+InpRiskRewardRatio=2.5
+InpExitStrategyMode=2
+InpTrailingStartPoints=3000
+InpTrailingStepPoints=1000
+InpBreakevenTriggerPoints=3000
+InpBreakevenOffsetPoints=500
+InpRangeStartHour=12
+InpRangeEndHour=16
+InpTradingStartHour=17
+InpTradingStartMin=30
+InpTradingEndHour=20
+InpTradingEndMin=30
+InpBreakoutBuffer=30

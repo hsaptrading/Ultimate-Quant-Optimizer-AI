@@ -1,0 +1,100 @@
+======================================================================
+  URB OPTIMIZER - Ultimate Range Breaker Optimization System
+======================================================================
+
+Started: 2025-12-26 10:01:08
+Log file: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\reports\optimization_log_20251226_100108.txt
+
+[INFO] Loading modules...
+  ✓ broker_config loaded
+  ✓ data_loader loaded
+  ✓ range_breaker loaded
+  ✓ backtester loaded
+  ✓ optimizer loaded
+  ✓ stress_tests loaded
+
+[INFO] All modules loaded successfully!
+
+==================================================
+CONFIGURATION
+==================================================
+
+Data directory: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\data
+CSV files found: 1
+
+Using tick data: USATECHIDXUSD.tick.utc2.csv
+
+Optimization method: random
+Combinations to test: 200
+Top results to keep: 30
+Train/Test split: 80% / 20%
+Monte Carlo simulations: 500
+
+==================================================
+STEP 1: Loading Data
+==================================================
+
+File: USATECHIDXUSD.tick.utc2.csv
+Size: 1277.4 MB
+Total ticks: 33,486,874
+Date range: 2025-06-23 01:08:47.943000 to 2025-12-26 01:59:59.023000
+Days of data: 186
+
+[INFO] Loading and converting to M15 bars...
+(This may take several minutes for large files)
+
+⚠️ ERROR loading data: Length mismatch: Expected axis has 3 elements, new values have 4 elements
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\run_optimization.py", line 174, in main
+    m15_data = create_m15_data(
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 234, in create_m15_data
+    ticks = load_tick_data(tick_filepath, start_date, end_date, use_cache)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 100, in load_tick_data
+    chunk.columns = ['datetime_str', 'bid', 'ask', 'volume']
+    ^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 6335, in __setattr__
+    return object.__setattr__(self, name, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/properties.pyx", line 69, in pandas._libs.properties.AxisProperty.__set__
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 817, in _set_axis
+    self._mgr.set_axis(axis, labels)
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\internals\managers.py", line 238, in set_axis
+    self._validate_set_axis(axis, new_labels)
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\internals\base.py", line 98, in _validate_set_axis
+    raise ValueError(
+ValueError: Length mismatch: Expected axis has 3 elements, new values have 4 elements
+
+
+==================================================
+CRITICAL ERROR
+==================================================
+
+ValueError: Length mismatch: Expected axis has 3 elements, new values have 4 elements
+
+Full traceback:
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\run_optimization.py", line 174, in main
+    m15_data = create_m15_data(
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 234, in create_m15_data
+    ticks = load_tick_data(tick_filepath, start_date, end_date, use_cache)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 100, in load_tick_data
+    chunk.columns = ['datetime_str', 'bid', 'ask', 'volume']
+    ^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 6335, in __setattr__
+    return object.__setattr__(self, name, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/properties.pyx", line 69, in pandas._libs.properties.AxisProperty.__set__
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 817, in _set_axis
+    self._mgr.set_axis(axis, labels)
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\internals\managers.py", line 238, in set_axis
+    self._validate_set_axis(axis, new_labels)
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\internals\base.py", line 98, in _validate_set_axis
+    raise ValueError(
+ValueError: Length mismatch: Expected axis has 3 elements, new values have 4 elements
+
+
+Please check the error above and try again.

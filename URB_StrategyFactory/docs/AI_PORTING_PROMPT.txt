@@ -1,0 +1,83 @@
+# Prompt Maestro para Conversión de Estrategias (MQL5/PineScript -> Python)
+
+Copia y pega este texto completo en ChatGPT (Preferiblemente GPT-4o) o Claude junto con tu código `.mq5` o `.pine`.
+
+--- 
+**INICIO DEL PROMPT**
+
+Actúa como un Ingeniero Senior de Trading Algorítmico especializado en Python y Numba.
+Necesito que conviertas la lógica de la siguiente estrategia (escrita en MQL5 o PineScript) al formato `BaseStrategy` de nuestra Fábrica de Estrategias en Python.
+
+La estrategia debe ser:
+1.  **Compatible con Numba (`@jit(nopython=True)`)**: Esto es crítico. No uses Pandas dentro del bucle. Usa solo NumPy Arrays.
+2.  **Basada en la Clase `BaseStrategy`**: Debe heredar de ella e implementar `calculate_signals`.
+
+### Referencia de la Clase Base:
+```python
+from backend.app.strategies.base import BaseStrategy
+from numba import jit
+import numpy as np
+
+# LA LÓGICA CORE DEBE SER UNA FUNCIÓN FUERA DE LA CLASE PARA JIT
+@jit(nopython=True)
+def strategy_logic_core(times, opens, highs, lows, closes, spreads, param1, param2, ...):
+    n = len(closes)
+    equity_curve = np.zeros(n)
+    current_equity = 100000.0
+    wins = 0; losses = 0
+    pos_type = 0 # 0=None, 1=Buy, -1=Sell
+    entry_price = 0.0; sl_price = 0.0; tp_price = 0.0
+    
+    for i in range(1, n):
+        equity_curve[i] = current_equity
+        
+        # ... TU LOGICA COMERCIAL AQUI ...
+        # Traduce las condiciones de entrada de MQL5 a IFs de Python
+        
+        # Gestión de Posición Simula (Exit first, then Entry)
+        if pos_type != 0:
+            # Check SL/TP
+            # ...
+            pass
+            
+        if pos_type == 0:
+            # Check Entry
+            # ...
+            pass
+            
+    return current_equity, wins, losses, equity_curve
+
+class TuEstrategia(BaseStrategy):
+    @property
+    def name(self): return "nombre_slug"
+    @property
+    def display_name(self): return "Nombre Bonito"
+    @property
+    def description(self): return "Descripcion corta"
+    
+    def get_params_schema(self):
+         # Define los inputs aqui igual que en MQL5
+         # IMPORTANTE: Asegurate de cubrir todos los inputs del codigo original
+         return [
+            {"category": "Main", "params": [
+                {"name": "Period", "type": "int", "default": 14}
+            ]}
+         ]
+
+    def calculate_signals(self, data, params):
+        p = lambda k, d: params.get(k, d)
+        
+        # Pre-Calcula indicadores usando TA-Lib o lógica NumPy aquí si es necesario
+        # O pásalos al core si son simples
+        
+        return strategy_logic_core(
+            data['time'], data['open'], data['high'], data['low'], data['close'], data['spread'],
+            int(p('Period', 14))
+        )
+```
+
+### Código Fuente Original:
+[PEGA AQUI TU CODIGO MQL5 O PINESCRIPT]
+
+---
+**FIN DEL PROMPT**

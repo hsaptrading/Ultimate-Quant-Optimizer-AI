@@ -1,0 +1,275 @@
+﻿//@version=5
+strategy("Breakout + Retest - Scalping Sesiones", overlay=true, calc_on_every_tick=false, initial_capital=100000, commission_type=strategy.commission.percent, commission_value=0.0, process_orders_on_close=true)
+
+// === INPUTS ===
+tz = input.string("Etc/UTC", "Zona horaria (GMT)")
+
+timeframeNote = "Usar en 5m o 15m"
+rangeBars = input.int(15, "Velas para formar rango", minval=5, maxval=30, step=5, tooltip=timeframeNote)
+minRangeATR = input.float(0.5, "Tamaño mínimo rango (x ATR)", minval=0.25, maxval=2.0, step=0.25)
+maxRangeATR = input.float(2.0, "Tamaño máximo rango (x ATR)", minval=0.5, maxval=3.0, step=0.25)
+
+preLondonSession = input.session("0000-0700", "Ventana formación Londres (GMT)")
+preNYSession = input.session("0600-1300", "Ventana formación NY (GMT)")
+
+londonSession = input.session("0730-1000", "Ventana operativa Londres (GMT)", options=["0700-1000","0730-1000","0800-1100"])
+nySession = input.session("1330-1600", "Ventana operativa NY (GMT)", options=["1300-1600","1330-1600","1400-1700"])
+
+bodyBreakoutMin = input.float(0.6, "Ratio cuerpo breakout", minval=0.5, maxval=0.8, step=0.05)
+retestBars = input.int(3, "Velas permitidas para retest", minval=1, maxval=5)
+retestToleranceATR = input.float(0.2, "Tolerancia retest (x ATR)", minval=0.1, maxval=0.4, step=0.05)
+entryMode = input.string("A", "Confirmación continuación", options=["A","B","C"], tooltip="A: vela rechazo / B: cierre retest / C: primera vela post retest")
+
+atrTF = input.string("15", "TF ATR para SL", options=["15","30","60","240"])
+atrPeriod = input.int(14, "Período ATR", minval=10, maxval=20, step=2)
+atrMult = input.float(1.5, "Multiplicador ATR", minval=1.0, maxval=3.0, step=0.25)
+rrOpt = input.string("1.5", "RR TP", options=["1","1.5","2"])
+
+forceCloseOpt = input.string("1700", "Hora cierre forzoso (GMT)", options=["1600","1700","1800","2100"])
+maxPerSession = input.int(1, "Máx. operaciones por sesión", minval=1, maxval=3)
+maxPerDay = input.int(2, "Máx. operaciones por día", minval=1, maxval=4)
+
+// === HELPERS ===
+getSessionBool(_sess) => not na(time(timeframe.period, _sess, tz))
+forceCloseHour = str.tonumber(str.substring(forceCloseOpt, 0, 2))
+forceCloseMin = str.tonumber(str.substring(forceCloseOpt, 2, 4))
+forceCloseNow = hour(time, tz) > forceCloseHour or (hour(time, tz) == forceCloseHour and minute(time, tz) >= forceCloseMin)
+
+a = request.security(syminfo.tickerid, atrTF, ta.atr(atrPeriod))
+rangeSizeOk(_hi, _lo) => (_hi - _lo) >= a * minRangeATR and (_hi - _lo) <= a * maxRangeATR
+bodyRatioOk() => 
+    rng = high - low
+    body = math.abs(close - open)
+    rng == 0 ? false : body / rng >= bodyBreakoutMin
+
+tol = a * retestToleranceATR
+
+// === COUNTERS ===
+var int dayRef = dayofmonth(time)
+var int tradesToday = 0
+var int tradesLondonToday = 0
+var int tradesNYToday = 0
+var int lastDirToday = 0  // 1 long, -1 short, 0 none
+if dayofmonth(time) != dayRef
+    dayRef := dayofmonth(time)
+    tradesToday := 0
+    tradesLondonToday := 0
+    tradesNYToday := 0
+    lastDirToday := 0
+
+// === RANGE STATE ===
+var float lHi = na
+var float lLo = na
+var bool lValid = false
+var float nyHi = na
+var float nyLo = na
+var bool nyValid = false
+
+preLondon = getSessionBool(preLondonSession)
+preNY = getSessionBool(preNYSession)
+tradeLondon = getSessionBool(londonSession)
+tradeNY = getSessionBool(nySession)
+
+// Precompute highs/lows for consistency
+lHiCalc = ta.highest(high, rangeBars)
+lLoCalc = ta.lowest(low, rangeBars)
+nyHiCalc = ta.highest(high, rangeBars)
+nyLoCalc = ta.lowest(low, rangeBars)
+
+// Update ranges during pre-session
+if preLondon
+    lHi := lHiCalc
+    lLo := lLoCalc
+    lValid := rangeSizeOk(lHi, lLo)
+
+if preNY
+    nyHi := nyHiCalc
+    nyLo := nyLoCalc
+    nyValid := rangeSizeOk(nyHi, nyLo)
+
+// Reset ranges after sessions end
+if not preLondon and not tradeLondon
+    lHi := lHi
+    lLo := lLo
+if not preNY and not tradeNY
+    nyHi := nyHi
+    nyLo := nyLo
+
+// Invalidate ranges at session close to avoid carry-over
+if not preLondon and not tradeLondon and not preNY and not tradeNY and hour(time, tz) > 21
+    lHi := na
+    lLo := na
+    lValid := false
+    nyHi := na
+    nyLo := na
+    nyValid := false
+
+// === BREAKOUT / RETEST STATE ===
+var bool lSetup = false
+var int lDir = 0
+var int lBreakBar = na
+var bool lRetestSeen = false
+
+var bool nySetup = false
+var int nyDir = 0
+var int nyBreakBar = na
+var bool nyRetestSeen = false
+
+// === CONDITIONS ===
+newDay = barstate.isnew and barstate.isfirst
+
+processSession(isTrade, isPre, hi, lo, valid, setup, dir, breakBar, retSeen, sessionName) =>
+    // make local copies (function args no son mutables)
+    _setup = setup
+    _dir = dir
+    _breakBar = breakBar
+    _retSeen = retSeen
+    // output helpers
+    _tradesDelta = 0
+    _tradesSessionDelta = 0
+    _lastDirOut = 0
+    _hasDirOut = false
+
+    canTrade = isTrade and valid and tradesToday < maxPerDay and ((sessionName == "LON" and tradesLondonToday < maxPerSession) or (sessionName == "NY" and tradesNYToday < maxPerSession))
+    breakoutLong = canTrade and bodyRatioOk() and close > hi and lastDirToday != -1
+    breakoutShort = canTrade and bodyRatioOk() and close < lo and lastDirToday != 1
+
+    // Detect breakout
+    if not _setup and (breakoutLong or breakoutShort)
+        _setup := true
+        _dir := breakoutLong ? 1 : -1
+        _breakBar := bar_index
+        _retSeen := false
+
+    // Cancel if deadline exceeded
+    if _setup and (bar_index - _breakBar > retestBars)
+        _setup := false
+        _dir := 0
+        _retSeen := false
+
+    // Retest detection
+    retestHit = false
+    if _setup
+        if _dir == 1
+            retestHit := low <= hi + tol and close >= hi
+            if close <= hi
+                _setup := false
+                _dir := 0
+                _retSeen := false
+        if _dir == -1
+            retestHit := high >= lo - tol and close <= lo
+            if close >= lo
+                _setup := false
+                _dir := 0
+                _retSeen := false
+
+    entryNow = false
+    entryPrice = close
+
+    // Entry logic per mode
+    if _setup and retestHit
+        _retSeen := true
+        if entryMode == "B"
+            entryNow := true
+        if entryMode == "A"
+            wickOkLong = _dir == 1 and low <= hi + tol and close > open and (close - open) >= 0.5 * (high - low)
+            wickOkShort = _dir == -1 and high >= lo - tol and close < open and (open - close) >= 0.5 * (high - low)
+            entryNow := wickOkLong or wickOkShort
+
+    if _setup and _retSeen and entryMode == "C" and bar_index > _breakBar
+        if _dir == 1 and close > open
+            entryNow := true
+        if _dir == -1 and close < open
+            entryNow := true
+
+    // Fire order
+    if _setup and entryNow
+        sessionTag = sessionName == "LON" ? "London" : "NY"
+        longLabel = sessionTag + " Long"
+        shortLabel = sessionTag + " Short"
+        if _dir == 1
+            strategy.entry(longLabel, strategy.long)
+        else
+            strategy.entry(shortLabel, strategy.short)
+
+        riskDist = a * atrMult
+        sl = _dir == 1 ? entryPrice - riskDist : entryPrice + riskDist
+        rr = rrOpt == "1" ? 1.0 : rrOpt == "1.5" ? 1.5 : 2.0
+        tp = _dir == 1 ? entryPrice + riskDist * rr : entryPrice - riskDist * rr
+        exitTag = sessionTag + " Exit"
+        if _dir == 1
+            strategy.exit(exitTag, from_entry=longLabel, stop=sl, limit=tp)
+        else
+            strategy.exit(exitTag, from_entry=shortLabel, stop=sl, limit=tp)
+
+        // Counters
+        _tradesDelta := 1
+        _tradesSessionDelta := 1
+        _lastDirOut := _dir
+        _hasDirOut := true
+
+        // Reset setup
+        _setup := false
+        _dir := 0
+        _retSeen := false
+
+    [_setup, _dir, _breakBar, _retSeen, _tradesDelta, _tradesSessionDelta, _lastDirOut, _hasDirOut]
+
+[lSetupNew, lDirNew, lBreakBarNew, lRetestSeenNew, lTradesDelta, lSessionDelta, lLastDir, lHasDir] = processSession(tradeLondon, preLondon, lHi, lLo, lValid, lSetup, lDir, lBreakBar, lRetestSeen, "LON")
+[nySetupNew, nyDirNew, nyBreakBarNew, nyRetestSeenNew, nyTradesDelta, nySessionDelta, nyLastDir, nyHasDir] = processSession(tradeNY, preNY, nyHi, nyLo, nyValid, nySetup, nyDir, nyBreakBar, nyRetestSeen, "NY")
+
+// Assign back session state
+lSetup := lSetupNew
+lDir := lDirNew
+lBreakBar := lBreakBarNew
+lRetestSeen := lRetestSeenNew
+nySetup := nySetupNew
+nyDir := nyDirNew
+nyBreakBar := nyBreakBarNew
+nyRetestSeen := nyRetestSeenNew
+
+// Apply counters outside function (Pine no permite mutar globales dentro)
+tradesToday := tradesToday + lTradesDelta + nyTradesDelta
+tradesLondonToday := tradesLondonToday + lSessionDelta
+tradesNYToday := tradesNYToday + nySessionDelta
+if lHasDir
+    lastDirToday := lLastDir
+if nyHasDir
+    lastDirToday := nyLastDir
+
+// Forced close
+if forceCloseNow and strategy.position_size != 0
+    strategy.close("Cierre forzoso")
+
+// === PLOTS ===
+plot(lValid and (preLondon or tradeLondon) ? lHi : na, color=color.new(color.teal, 0), style=plot.style_linebr, title="Rango Londres High")
+plot(lValid and (preLondon or tradeLondon) ? lLo : na, color=color.new(color.teal, 0), style=plot.style_linebr, title="Rango Londres Low")
+plot(nyValid and (preNY or tradeNY) ? nyHi : na, color=color.new(color.orange, 0), style=plot.style_linebr, title="Rango NY High")
+plot(nyValid and (preNY or tradeNY) ? nyLo : na, color=color.new(color.orange, 0), style=plot.style_linebr, title="Rango NY Low")
+
+plotshape(lSetup and lDir == 1, title="Breakout LON Long", style=shape.triangleup, color=color.teal, location=location.abovebar, size=size.tiny)
+plotshape(lSetup and lDir == -1, title="Breakout LON Short", style=shape.triangledown, color=color.teal, location=location.belowbar, size=size.tiny)
+plotshape(nySetup and nyDir == 1, title="Breakout NY Long", style=shape.triangleup, color=color.orange, location=location.abovebar, size=size.tiny)
+plotshape(nySetup and nyDir == -1, title="Breakout NY Short", style=shape.triangledown, color=color.orange, location=location.belowbar, size=size.tiny)
+
+// Labels on entries
+if strategy.position_size > 0 and strategy.position_size[1] == 0
+    label.new(bar_index, low, "Entrada Long", style=label.style_label_up, color=color.new(color.green, 0), textcolor=color.white)
+if strategy.position_size < 0 and strategy.position_size[1] == 0
+    label.new(bar_index, high, "Entrada Short", style=label.style_label_down, color=color.new(color.red, 0), textcolor=color.white)
+
+// Show SL/TP lines for open trade
+float slPlot = na
+float tpPlot = na
+if strategy.position_size != 0
+    riskDist = a * atrMult
+    rr = rrOpt == "1" ? 1.0 : rrOpt == "1.5" ? 1.5 : 2.0
+    if strategy.position_size > 0
+        slPlot := strategy.position_avg_price - riskDist
+        tpPlot := strategy.position_avg_price + riskDist * rr
+    if strategy.position_size < 0
+        slPlot := strategy.position_avg_price + riskDist
+        tpPlot := strategy.position_avg_price - riskDist * rr
+
+plot(slPlot, title="SL", color=color.new(color.red, 0), style=plot.style_line)
+plot(tpPlot, title="TP", color=color.new(color.green, 0), style=plot.style_line)

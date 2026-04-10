@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>URB Strategy Factory - Initializing...</title>
+    <style>
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify_content: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .loader {
+        border: 4px solid #333;
+        border-top: 4px solid #00ff88;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      h1 { color: #00ff88; font-weight: 300; }
+      .status { padding: 10px 20px; background: #222; border-radius: 4px; border: 1px solid #333; margin-top: 20px;}
+    </style>
+  </head>
+  <body>
+    <div class="loader"></div>
+    <h1>URB Strategy Factory</h1>
+    <p>Loading Interface Engine...</p>
+    
+    <div class="status" id="api-status">
+      Checking Backend Connection...
+    </div>
+
+    <script>
+      // Simple script to test API connection
+      const updateStatus = (msg, color='#e0e0e0') => {
+        const el = document.getElementById('api-status');
+        el.innerText = msg;
+        el.style.color = color;
+      };
+
+      setInterval(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/bridge/terminals');
+            if(res.ok) {
+                const data = await res.json();
+                updateStatus(`Backend Connected! Terminals found: ${data.length}`, '#00ff88');
+            } else {
+                updateStatus('Backend Error', '#ff4444');
+            }
+        } catch(e) {
+            updateStatus('Backend Not Reachable (Is run_urb_engine.bat running?)', '#ffaa00');
+        }
+      }, 2000);
+    </script>
+  </body>
+</html>

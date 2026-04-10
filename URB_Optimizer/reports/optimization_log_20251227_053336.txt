@@ -1,0 +1,194 @@
+======================================================================
+  URB OPTIMIZER - Ultimate Range Breaker Optimization System
+======================================================================
+
+Started: 2025-12-27 05:33:36
+Log file: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\reports\optimization_log_20251227_053336.txt
+
+[INFO] Loading modules...
+  ✓ broker_config loaded
+  ✓ data_loader loaded
+  ✓ range_breaker loaded
+  ✓ backtester loaded
+  ✓ optimizer loaded
+  ✓ stress_tests loaded
+
+[INFO] All modules loaded successfully!
+
+==================================================
+CONFIGURATION
+==================================================
+
+Data directory: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\data
+CSV files found: 1
+
+Using tick data: USATECHIDXUSD.tick.utc2.csv
+
+Optimization method: random
+Combinations to test: 200
+Top results to keep: 30
+Train/Test split: 80% / 20%
+Monte Carlo simulations: 500
+
+==================================================
+STEP 1: Loading Data
+==================================================
+
+File: USATECHIDXUSD.tick.utc2.csv
+Size: 1277.4 MB
+Total ticks: 33,486,875
+Date range: 2025-06-23 01:08:47.793000 to 2025-12-26 01:59:59.023000
+Days of data: 186
+
+[INFO] Loading and converting to M15 bars...
+(This may take several minutes for large files)
+
+✓ M15 bars loaded: 11,723
+Period: 2025-06-23 01:00:00 to 2025-12-26 01:45:00
+
+Sample M15 data (first 5 bars):
+             datetime     open     high      low    close  tick_volume  spread_avg  bar_index
+0 2025-06-23 01:00:00  21510.9  21527.6  21497.0  21500.5         2148    2.063501          0
+1 2025-06-23 01:15:00  21499.9  21532.0  21482.6  21519.0         3510    3.428148          1
+2 2025-06-23 01:30:00  21518.5  21565.6  21518.5  21540.8         3386    3.426432          2
+3 2025-06-23 01:45:00  21541.5  21554.4  21520.4  21539.8         2735    3.426801          3
+4 2025-06-23 02:00:00  21539.8  21543.8  21515.8  21526.4         2552    3.425353          4
+
+==================================================
+STEP 1.5: Signal Generation Diagnostic
+==================================================
+
+Testing signal generation with default parameters...
+
+Signal Statistics:
+  Total signals: 104
+  Buy signals: 40
+  Sell signals: 64
+
+Running quick backtest with default params...
+  Trades executed: 104
+  Win rate: 35.6%
+  Profit factor: 1.07
+  Net profit: $4,883.84
+
+==================================================
+STEP 2: Parameter Optimization
+==================================================
+
+[INFO] Starting optimization with 200 combinations...
+[INFO] Using all available CPU cores for parallel processing
+
+✓ Optimization complete!
+Valid results found: 30
+
+--- Top 10 Results ---
+
+#1 Score: 0.6070
+   IS: 49 trades, PF=1.61, WR=44.9%, DD=6.5%
+   OOS: 16 trades, PF=0.52, WR=25.0%
+
+#2 Score: 0.6039
+   IS: 46 trades, PF=1.50, WR=43.5%, DD=3.6%
+   OOS: 16 trades, PF=0.75, WR=31.2%
+
+#3 Score: 0.5792
+   IS: 49 trades, PF=1.47, WR=42.9%, DD=6.5%
+   OOS: 16 trades, PF=0.74, WR=31.2%
+
+#4 Score: 0.5722
+   IS: 45 trades, PF=1.57, WR=44.4%, DD=10.9%
+   OOS: 16 trades, PF=0.50, WR=25.0%
+
+#5 Score: 0.5619
+   IS: 45 trades, PF=1.45, WR=37.8%, DD=5.3%
+   OOS: 16 trades, PF=0.58, WR=25.0%
+
+#6 Score: 0.5616
+   IS: 46 trades, PF=1.56, WR=34.8%, DD=10.2%
+   OOS: 16 trades, PF=0.49, WR=18.8%
+
+#7 Score: 0.5407
+   IS: 48 trades, PF=1.35, WR=47.9%, DD=4.2%
+   OOS: 16 trades, PF=0.55, WR=31.2%
+
+#8 Score: 0.5395
+   IS: 45 trades, PF=1.46, WR=33.3%, DD=5.7%
+   OOS: 16 trades, PF=0.46, WR=18.8%
+
+#9 Score: 0.5381
+   IS: 46 trades, PF=1.42, WR=37.0%, DD=5.5%
+   OOS: 16 trades, PF=0.44, WR=18.8%
+
+#10 Score: 0.5381
+   IS: 46 trades, PF=1.42, WR=37.0%, DD=5.5%
+   OOS: 16 trades, PF=0.68, WR=25.0%
+
+✓ Results exported: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\reports\optimization_results_20251227_053336.csv
+
+==================================================
+STEP 3: Stress Testing Top Results
+==================================================
+
+[1/10] Testing strategy...
+  FAILED ✗ | Trades: 65, Profit Mean: $11,028, Ruin Prob: 16.2%
+
+[2/10] Testing strategy...
+  PASSED ✓ | Trades: 62, Profit Mean: $5,203, Ruin Prob: 0.0%
+
+[3/10] Testing strategy...
+  FAILED ✗ | Trades: 65, Profit Mean: $10,439, Ruin Prob: 17.6%
+
+[4/10] Testing strategy...
+  FAILED ✗ | Trades: 61, Profit Mean: $13,282, Ruin Prob: 67.8%
+
+[5/10] Testing strategy...
+  FAILED ✗ | Trades: 61, Profit Mean: $8,288, Ruin Prob: 41.2%
+
+[6/10] Testing strategy...
+  FAILED ✗ | Trades: 62, Profit Mean: $10,787, Ruin Prob: 37.6%
+
+[7/10] Testing strategy...
+  PASSED ✓ | Trades: 64, Profit Mean: $1,870, Ruin Prob: 0.0%
+
+[8/10] Testing strategy...
+  PASSED ✓ | Trades: 61, Profit Mean: $3,437, Ruin Prob: 0.6%
+
+[9/10] Testing strategy...
+  PASSED ✓ | Trades: 62, Profit Mean: $2,530, Ruin Prob: 0.2%
+
+[10/10] Testing strategy...
+  PASSED ✓ | Trades: 62, Profit Mean: $4,217, Ruin Prob: 0.2%
+
+==================================================
+STEP 4: Exporting to Databank
+==================================================
+✓ Exported: strategy_20251227_053336_01
+✓ Exported: strategy_20251227_053336_02
+✓ Exported: strategy_20251227_053336_03
+✓ Exported: strategy_20251227_053336_04
+✓ Exported: strategy_20251227_053336_05
+
+======================================================================
+FINAL SUMMARY
+======================================================================
+
+Total combinations tested: 200
+Valid results: 30
+Passed stress testing: 5
+
+✓ SUCCESS! Strategies exported to databank folder.
+
+Best Strategy (#2):
+  Score: 0.6039
+  Trades: 46
+  Profit Factor: 1.50
+  Win Rate: 43.5%
+  Monte Carlo Profit: $5,203
+
+Completed: 2025-12-27 05:33:46
+
+Output files:
+  Log: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\reports\optimization_log_20251227_053336.txt
+  Results: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\reports\optimization_results_20251227_053336.csv
+  Databank: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\databank
+======================================================================

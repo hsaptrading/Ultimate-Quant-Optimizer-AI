@@ -1,0 +1,218 @@
+[
+  {
+    "id": "strat_1766873365_2737",
+    "params": {
+      "RangeStartHour": 15,
+      "RangeStartMin": 0,
+      "RangeEndHour": 18,
+      "RangeEndMin": 0,
+      "TradingStartHour": 18,
+      "TradingStartMin": 45,
+      "TradingEndHour": 4,
+      "TradingEndMin": 15,
+      "BufferPoints": 5.0,
+      "SLPoints": 322.0,
+      "TPPoints": 477.0,
+      "UseADX": false,
+      "AdxThreshold": 30.0,
+      "UseRSI": false,
+      "Commission": 3.5,
+      "SwapLong": -1.0,
+      "SwapShort": -0.5
+    },
+    "metrics_is": {
+      "NetProfit": 1068.0913472427346,
+      "Trades": 249,
+      "WinRate": 46.98795180722892,
+      "Equity": 101068.09134724273
+    },
+    "metrics_oos": {
+      "NetProfit": 690.3333490178775,
+      "Trades": 110,
+      "WinRate": 49.09090909090909,
+      "Equity": 100690.33334901788
+    },
+    "score": 1758.424696260612,
+    "robustness_score": 90.0
+  },
+  {
+    "id": "strat_1766873402_3984",
+    "params": {
+      "RangeStartHour": 5,
+      "RangeStartMin": 30,
+      "RangeEndHour": 13,
+      "RangeEndMin": 45,
+      "TradingStartHour": 13,
+      "TradingStartMin": 30,
+      "TradingEndHour": 16,
+      "TradingEndMin": 0,
+      "BufferPoints": 5.0,
+      "SLPoints": 366.0,
+      "TPPoints": 780.0,
+      "UseADX": false,
+      "AdxThreshold": 25.0,
+      "UseRSI": true,
+      "Commission": 3.5,
+      "SwapLong": -1.0,
+      "SwapShort": -0.5
+    },
+    "metrics_is": {
+      "NetProfit": 823.7008309397788,
+      "Trades": 134,
+      "WinRate": 38.80597014925373,
+      "Equity": 100823.70083093978
+    },
+    "metrics_oos": {
+      "NetProfit": 420.7183459860971,
+      "Trades": 77,
+      "WinRate": 37.66233766233766,
+      "Equity": 100420.7183459861
+    },
+    "score": 1244.419176925876,
+    "robustness_score": 100.0
+  },
+  {
+    "id": "strat_1766873425_4779",
+    "params": {
+      "RangeStartHour": 6,
+      "RangeStartMin": 45,
+      "RangeEndHour": 13,
+      "RangeEndMin": 15,
+      "TradingStartHour": 13,
+      "TradingStartMin": 30,
+      "TradingEndHour": 17,
+      "TradingEndMin": 15,
+      "BufferPoints": 30.0,
+      "SLPoints": 391.0,
+      "TPPoints": 775.0,
+      "UseADX": false,
+      "AdxThreshold": 20.0,
+      "UseRSI": false,
+      "Commission": 3.5,
+      "SwapLong": -1.0,
+      "SwapShort": -0.5
+    },
+    "metrics_is": {
+      "NetProfit": 965.015021445317,
+      "Trades": 134,
+      "WinRate": 41.04477611940299,
+      "Equity": 100965.01502144532
+    },
+    "metrics_oos": {
+      "NetProfit": 264.4428147250874,
+      "Trades": 78,
+      "WinRate": 37.17948717948718,
+      "Equity": 100264.44281472509
+    },
+    "score": 1229.4578361704043,
+    "robustness_score": 100.0
+  },
+  {
+    "id": "strat_1766873423_4709",
+    "params": {
+      "RangeStartHour": 17,
+      "RangeStartMin": 0,
+      "RangeEndHour": 22,
+      "RangeEndMin": 45,
+      "TradingStartHour": 22,
+      "TradingStartMin": 0,
+      "TradingEndHour": 0,
+      "TradingEndMin": 15,
+      "BufferPoints": 30.0,
+      "SLPoints": 283.0,
+      "TPPoints": 733.0,
+      "UseADX": false,
+      "AdxThreshold": 30.0,
+      "UseRSI": true,
+      "Commission": 3.5,
+      "SwapLong": -1.0,
+      "SwapShort": -0.5
+    },
+    "metrics_is": {
+      "NetProfit": 1123.0036187146325,
+      "Trades": 86,
+      "WinRate": 41.86046511627907,
+      "Equity": 101123.00361871463
+    },
+    "metrics_oos": {
+      "NetProfit": 18.32342227199115,
+      "Trades": 38,
+      "WinRate": 28.947368421052634,
+      "Equity": 100018.32342227199
+    },
+    "score": 1141.3270409866236,
+    "robustness_score": 100.0
+  },
+  {
+    "id": "strat_1766873410_4267",
+    "params": {
+      "RangeStartHour": 17,
+      "RangeStartMin": 0,
+      "RangeEndHour": 18,
+      "RangeEndMin": 45,
+      "TradingStartHour": 18,
+      "TradingStartMin": 0,
+      "TradingEndHour": 19,
+      "TradingEndMin": 0,
+      "BufferPoints": 10.0,
+      "SLPoints": 385.0,
+      "TPPoints": 738.0,
+      "UseADX": false,
+      "AdxThreshold": 20.0,
+      "UseRSI": false,
+      "Commission": 3.5,
+      "SwapLong": -1.0,
+      "SwapShort": -0.5
+    },
+    "metrics_is": {
+      "NetProfit": 877.1330348144838,
+      "Trades": 99,
+      "WinRate": 43.43434343434344,
+      "Equity": 100877.13303481448
+    },
+    "metrics_oos": {
+      "NetProfit": 239.68983125922387,
+      "Trades": 45,
+      "WinRate": 40.0,
+      "Equity": 100239.68983125922
+    },
+    "score": 1116.8228660737077,
+    "robustness_score": 100.0
+  },
+  {
+    "id": "strat_1766873319_1071",
+    "params": {
+      "RangeStartHour": 16,
+      "RangeStartMin": 0,
+      "RangeEndHour": 22,
+      "RangeEndMin": 45,
+      "TradingStartHour": 22,
+      "TradingStartMin": 0,
+      "TradingEndHour": 3,
+      "TradingEndMin": 30,
+      "BufferPoints": 10.0,
+      "SLPoints": 335.0,
+      "TPPoints": 710.0,
+      "UseADX": true,
+      "AdxThreshold": 30.0,
+      "UseRSI": false,
+      "Commission": 3.5,
+      "SwapLong": -1.0,
+      "SwapShort": -0.5
+    },
+    "metrics_is": {
+      "NetProfit": 589.3903759786917,
+      "Trades": 88,
+      "WinRate": 39.77272727272727,
+      "Equity": 100589.39037597869
+    },
+    "metrics_oos": {
+      "NetProfit": 192.23307976251817,
+      "Trades": 31,
+      "WinRate": 38.70967741935484,
+      "Equity": 100192.23307976252
+    },
+    "score": 781.6234557412099,
+    "robustness_score": 100.0
+  }
+]

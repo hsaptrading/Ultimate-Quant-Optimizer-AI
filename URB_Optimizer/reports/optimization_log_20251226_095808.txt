@@ -1,0 +1,107 @@
+======================================================================
+  URB OPTIMIZER - Ultimate Range Breaker Optimization System
+======================================================================
+
+Started: 2025-12-26 09:58:08
+Log file: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\reports\optimization_log_20251226_095808.txt
+
+[INFO] Loading modules...
+  ✓ broker_config loaded
+  ✓ data_loader loaded
+  ✓ range_breaker loaded
+  ✓ backtester loaded
+  ✓ optimizer loaded
+  ✓ stress_tests loaded
+
+[INFO] All modules loaded successfully!
+
+==================================================
+CONFIGURATION
+==================================================
+
+Data directory: C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\data
+CSV files found: 1
+
+Using tick data: USATECHIDXUSD.tick.utc2.csv
+
+Optimization method: random
+Combinations to test: 200
+Top results to keep: 30
+Train/Test split: 80% / 20%
+Monte Carlo simulations: 500
+
+==================================================
+STEP 1: Loading Data
+==================================================
+
+⚠️ ERROR getting file info: time data '2025.06.23 01:08:47.943' does not match format '%Y%m%d %H:%M:%S'
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 30, in parse_sqx_datetime
+    return datetime.strptime(dt_str, "%Y%m%d %H:%M:%S.%f")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 567, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 349, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+ValueError: time data '2025.06.23 01:08:47.943' does not match format '%Y%m%d %H:%M:%S.%f'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\run_optimization.py", line 158, in main
+    info = get_data_info(str(TICK_FILE))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 242, in get_data_info
+    first_dt = parse_sqx_datetime(first_parts[0])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 33, in parse_sqx_datetime
+    return datetime.strptime(dt_str, "%Y%m%d %H:%M:%S")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 567, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 349, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+ValueError: time data '2025.06.23 01:08:47.943' does not match format '%Y%m%d %H:%M:%S'
+
+
+==================================================
+CRITICAL ERROR
+==================================================
+
+ValueError: time data '2025.06.23 01:08:47.943' does not match format '%Y%m%d %H:%M:%S'
+
+Full traceback:
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 30, in parse_sqx_datetime
+    return datetime.strptime(dt_str, "%Y%m%d %H:%M:%S.%f")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 567, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 349, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+ValueError: time data '2025.06.23 01:08:47.943' does not match format '%Y%m%d %H:%M:%S.%f'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\run_optimization.py", line 158, in main
+    info = get_data_info(str(TICK_FILE))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 242, in get_data_info
+    first_dt = parse_sqx_datetime(first_parts[0])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Roaming\MetaQuotes\Terminal\A04693C82B55C771297FDD766AEA5652\MQL5\Experts\Ultimate Range Breaker - copia\URB_Optimizer\src\data_loader.py", line 33, in parse_sqx_datetime
+    return datetime.strptime(dt_str, "%Y%m%d %H:%M:%S")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 567, in _strptime_datetime
+    tt, fraction, gmtoff_fraction = _strptime(data_string, format)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\AppData\Local\Programs\Python\Python311\Lib\_strptime.py", line 349, in _strptime
+    raise ValueError("time data %r does not match format %r" %
+ValueError: time data '2025.06.23 01:08:47.943' does not match format '%Y%m%d %H:%M:%S'
+
+
+Please check the error above and try again.

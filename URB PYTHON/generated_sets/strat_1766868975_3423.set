@@ -1,0 +1,23 @@
+; URB Strategy Factory Auto-Generated Set
+; Score: 4821.457782399695
+InpMagicNumber=3423
+InpTradeComment=strat_1766868975_3423
+InpRangeStartHour=10
+InpRangeStartMin=0
+InpRangeEndHour=18
+InpRangeEndMin=45
+InpTradingStartHour=18
+InpTradingStartMin=45
+InpTradingEndHour=20
+InpTradingEndMin=0
+InpExecutionMode=0
+InpBreakoutBuffer=15
+InpLotSizingMode=0
+InpFixedLot=0.1
+InpSlMethod=0
+InpFixedSL_In_Points=127
+InpRiskRewardRatio=0.53
+InpUseActivityFilter=false
+InpAdxTrendMode=0
+InpRsiConfirmMode=0
+InpUseMultiTimeframe=false

@@ -1,0 +1,16 @@
+; URB Optimizer Generated Set File
+; Generated: 2025-12-27 05:12:43.060047
+;
+InpRiskPercent=0.5
+InpSlMethod=fixed
+InpFixedSlPoints=7000
+InpSLRangeMultiplier=1.5
+InpSLRangeMinPoints=1000
+InpSLRangeMaxPoints=8000
+InpRiskRewardRatio=2.0
+InpTrailingStartPoints=2000
+InpTrailingStepPoints=1000
+InpBreakevenTriggerPoints=3000
+InpBreakevenOffsetPoints=500
+InpRangeStartHour=12
+InpRangeEndHour=16

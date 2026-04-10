@@ -1,0 +1,69 @@
+======================================================================
+  URB OPTIMIZER - Ultimate Range Breaker Optimization System
+======================================================================
+
+Started: 2026-01-20 06:59:39
+Log file: C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\reports\optimization_log_20260120_065939.txt
+
+[INFO] Loading modules...
+  ✓ broker_config loaded
+  ✓ data_loader loaded
+  ✓ range_breaker loaded
+  ✓ backtester loaded
+  ✓ optimizer loaded
+  ✓ stress_tests loaded
+
+[INFO] All modules loaded successfully!
+
+==================================================
+CONFIGURATION
+==================================================
+
+Data directory: C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\data
+CSV files found: 2
+
+Using tick data: US100.M1.utc2.csv
+
+Optimization method: random
+Combinations to test: 200
+Top results to keep: 30
+Train/Test split: 80% / 20%
+Monte Carlo simulations: 500
+
+==================================================
+STEP 1: Loading Data
+==================================================
+
+⚠️ ERROR getting file info: Unable to parse datetime: 2012.01.19
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\run_optimization.py", line 158, in main
+    info = get_data_info(str(TICK_FILE))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\src\data_loader.py", line 270, in get_data_info
+    first_dt = parse_sqx_datetime(first_parts[0])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\src\data_loader.py", line 44, in parse_sqx_datetime
+    raise ValueError(f"Unable to parse datetime: {dt_str}")
+ValueError: Unable to parse datetime: 2012.01.19
+
+
+==================================================
+CRITICAL ERROR
+==================================================
+
+ValueError: Unable to parse datetime: 2012.01.19
+
+Full traceback:
+Traceback (most recent call last):
+  File "C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\run_optimization.py", line 158, in main
+    info = get_data_info(str(TICK_FILE))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\src\data_loader.py", line 270, in get_data_info
+    first_dt = parse_sqx_datetime(first_parts[0])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Shakti Ayala\Desktop\URB Optimizer\URB_Optimizer\src\data_loader.py", line 44, in parse_sqx_datetime
+    raise ValueError(f"Unable to parse datetime: {dt_str}")
+ValueError: Unable to parse datetime: 2012.01.19
+
+
+Please check the error above and try again.

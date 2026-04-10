@@ -1,0 +1,144 @@
+//@version=5
+strategy("NY Killzone Liquidity Sweep [Gemini]", overlay=true, initial_capital=10000, default_qty_type=strategy.percent_of_equity, default_qty_value=1, currency=currency.USD)
+
+//Groups used for organization
+grp_time   = "Time Settings (NY Time)"
+grp_risk   = "Risk Management"
+grp_filter = "Filters"
+
+// --- Inputs ---
+// Time Settings
+preMarketStart = input.session("0830-0930", "Pre-Market Range Time", group=grp_time) 
+killzoneSession = input.session("0930-1100", "Trading Killzone Time", group=grp_time) 
+hardExitTime = input.session("1500-1600", "Hard Exit Time (Close All)", group=grp_time, tooltip="Closes all positions once this time is reached")
+tz = input.string("America/New_York", "Timezone", group=grp_time)
+
+// Risk Management
+slMethod = input.string("Sweep Point + ATR", "Stop Loss Method", options=["Sweep Point", "Sweep Point + ATR", "Fixed ATR Distance"], group=grp_risk)
+atrLength = input.int(14, "ATR Length", group=grp_risk)
+atrTfInput = input.timeframe("", "ATR Timeframe (Empty = Current)", group=grp_risk, tooltip="Use a higher timeframe (e.g. 60) for less noise")
+atrBufferMult = input.float(0.5, "ATR Buffer/Distance Multiplier", step=0.1, group=grp_risk)
+
+rrRatio = input.float(2.0, "Risk:Reward Ratio", minval=1.0, group=grp_risk)
+maxDailyTrades = input.int(2, "Max Trades Per Day", group=grp_risk)
+
+// Visuals
+showBoxes = input.bool(true, "Show SL/TP Boxes?", group="Visuals")
+tpColor = input.color(color.new(color.teal, 80), "TP Box Color", group="Visuals")
+slColor = input.color(color.new(color.red, 80), "SL Box Color", group="Visuals")
+
+// Filters
+useTrendFilter = input.bool(true, "Use HTF Trend Filter?", group=grp_filter)
+htfSelection = input.timeframe("D", "Trend Timeframe", group=grp_filter)
+
+// --- Logic for ATR ---
+// Calculate ATR based on selected timeframe
+atrValue = request.security(syminfo.tickerid, atrTfInput, ta.atr(atrLength))
+
+// --- Logic for Pre-Market Range ---
+var float pmHigh = na
+var float pmLow  = na
+var int   dayCount = 0
+
+isInSession(sess) => not na(time(timeframe.period, sess, tz))
+
+isNewDay = ta.change(time("D"))
+if isNewDay
+    dayCount := 0
+    pmHigh := na
+    pmLow  = na
+
+if isInSession(preMarketStart)
+    if na(pmHigh)
+        pmHigh := high
+        pmLow  := low
+    else
+        pmHigh := math.max(pmHigh, high)
+        pmLow  := math.min(pmLow, low)
+
+// --- Logic for HTF Trend ---
+htfEma = request.security(syminfo.tickerid, htfSelection, ta.ema(close, 200))
+isBullish = not useTrendFilter or (close > htfEma)
+isBearish = not useTrendFilter or (close < htfEma)
+
+// --- Entry Logic ---
+var int tradesToday = 0
+if isNewDay
+    tradesToday := 0
+
+canTrade = isInSession(killzoneSession) and tradesToday < maxDailyTrades
+
+longCondition = canTrade and low < pmLow and close > pmLow and isBullish
+shortCondition = canTrade and high > pmHigh and close < pmHigh and isBearish
+
+// --- Visual Function for Boxes ---
+drawTradeBox(entry, stopLevel, targetLevel, isLong) =>
+    if showBoxes
+        int boxLength = 30 
+        
+        box.new(bar_index, entry, bar_index + boxLength, stopLevel, 
+             border_color = slColor, 
+             bgcolor = slColor,
+             text = "Stop Loss",
+             text_color = color.white,
+             text_size = size.tiny)
+             
+        box.new(bar_index, entry, bar_index + boxLength, targetLevel, 
+             border_color = tpColor, 
+             bgcolor = tpColor,
+             text = "Take Profit",
+             text_color = color.white,
+             text_size = size.tiny)
+
+// --- Execution ---
+if longCondition
+    float slPrice = na
+    if slMethod == "Sweep Point"
+        slPrice := low 
+    else if slMethod == "Sweep Point + ATR"
+        slPrice := low - (atrValue * atrBufferMult)
+    else 
+        slPrice := close - (atrValue * atrBufferMult)
+
+    entryPrice = close
+    distance = entryPrice - slPrice 
+    tpPrice = entryPrice + (distance * rrRatio)
+    
+    strategy.entry("Long Sweep", strategy.long)
+    strategy.exit("Exit Long", "Long Sweep", stop=slPrice, limit=tpPrice)
+    tradesToday := tradesToday + 1
+    
+    drawTradeBox(entryPrice, slPrice, tpPrice, true)
+
+if shortCondition
+    float slPrice = na
+    if slMethod == "Sweep Point"
+        slPrice := high
+    else if slMethod == "Sweep Point + ATR"
+        slPrice := high + (atrValue * atrBufferMult)
+    else 
+        slPrice := close + (atrValue * atrBufferMult)
+
+    entryPrice = close
+    distance = slPrice - entryPrice
+    tpPrice = entryPrice - (distance * rrRatio)
+    
+    strategy.entry("Short Sweep", strategy.short)
+    strategy.exit("Exit Short", "Short Sweep", stop=slPrice, limit=tpPrice)
+    tradesToday := tradesToday + 1
+    
+    drawTradeBox(entryPrice, slPrice, tpPrice, false)
+
+// --- Hard Exit Logic ---
+// Automatically close all positions if we enter the Hard Exit time window
+if isInSession(hardExitTime)
+    strategy.close_all(comment = "Hard Time Exit")
+
+// --- Background Visuals ---
+bgcolor(isInSession(preMarketStart) ? color.new(color.blue, 90) : na, title="Pre-Market Background")
+bgcolor(isInSession(killzoneSession) ? color.new(color.orange, 90) : na, title="Killzone Background")
+// Optional: Visualize exit time
+bgcolor(isInSession(hardExitTime) ? color.new(color.gray, 90) : na, title="Hard Exit Background")
+
+plot(canTrade ? pmHigh : na, "PM High", color=color.green, style=plot.style_linebr)
+plot(canTrade ? pmLow : na, "PM Low", color=color.red, style=plot.style_linebr)

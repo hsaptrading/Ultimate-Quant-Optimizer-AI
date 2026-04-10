@@ -1,0 +1,9 @@
+# Ignorar dependencias de Node
+node_modules/
+
+# Ignorar bases de datos y archivos históricos pesados
+*.csv
+*.parquet
+Data/
+data/
+URB_Optimizer/data/
