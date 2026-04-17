@@ -724,7 +724,15 @@ const ConfigView = ({ onNext }) => {
                         </div>
                     )}
 
-                    <DataControlCard onNext={onNext} strategyConfirmed={isStrategyReady} selectedPlatform={selectedPlatform} />
+                    <DataControlCard
+                        onNext={onNext}
+                        strategyConfirmed={isStrategyReady}
+                        selectedPlatform={selectedPlatform}
+                        dataSourceType={dataSourceType}
+                        setDataSourceType={setDataSourceType}
+                        mt5Timezone={mt5Timezone}
+                        setMt5Timezone={setMt5Timezone}
+                    />
                 </div>
             )}
         </div>
@@ -740,7 +748,15 @@ const InfoStat = ({ label, value, highlight, sub }) => (
     </div>
 );
 
-const DataControlCard = ({ onNext, strategyConfirmed }) => {
+const DataControlCard = ({
+    onNext,
+    strategyConfirmed,
+    selectedPlatform,
+    dataSourceType,
+    setDataSourceType,
+    mt5Timezone,
+    setMt5Timezone
+}) => {
     const [dataStatus, setDataStatus] = useState(null);
     const [split, setSplit] = useState(80);
     const [splitMode, setSplitMode] = useState('standard'); // 'standard' or 'adv'
@@ -800,11 +816,12 @@ const DataControlCard = ({ onNext, strategyConfirmed }) => {
         }
     };
 
-    const handleLoadFile = async () => {
-        if (!selectedFile) return;
+    const handleLoadFile = async (filenameOverride) => {
+        const filename = filenameOverride || selectedFile;
+        if (!filename) return;
         try {
             const payload = {
-                filename: selectedFile,
+                filename,
                 source_type: 'folder'
             };
 
@@ -1016,7 +1033,10 @@ const DataControlCard = ({ onNext, strategyConfirmed }) => {
                                                     <td style={{ padding: 8, color: '#888' }}>{f.modified}</td>
                                                     <td style={{ padding: 8 }}>
                                                         <button
-                                                            onClick={() => { setSelectedFile(f.name); handleLoadFile(); }}
+                                                            onClick={() => {
+                                                                setSelectedFile(f.name);
+                                                                handleLoadFile(f.name);
+                                                            }}
                                                             style={{
                                                                 background: '#00cc88', color: '#000', border: 'none',
                                                                 padding: '4px 8px', borderRadius: 4, cursor: 'pointer', fontWeight: 'bold'
